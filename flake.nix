@@ -22,8 +22,22 @@
         pkgs = import nixpkgs {
           inherit system;
         };
+
+        bats-assert-additions = pkgs.stdenvNoCC.mkDerivation {
+          pname = "bats-assert-additions";
+          version = "0.1.0";
+          src = ./.;
+          dontBuild = true;
+          installPhase = ''
+            mkdir -p $out/share/bats/bats-assert-additions/src
+            cp load.bash $out/share/bats/bats-assert-additions/
+            cp src/*.bash $out/share/bats/bats-assert-additions/src/
+          '';
+        };
       in
       {
+        packages.default = bats-assert-additions;
+
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             just
